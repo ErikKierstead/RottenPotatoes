@@ -5,10 +5,10 @@ class MoviesController < ApplicationController
     @movie = Movie.find(id) # look up movie by unique ID
     # will render app/views/movies/show.<extension> by default
  
-    sort = params[:sort] || session[:sort]
-    if sort == 'title'
-       ordering = {:order => :title}
-       end
+#sort = params[:sort] || session[:sort]
+#   if sort == 'title'
+#      ordering = {:order => :title}
+#      end
     
  end
 
@@ -20,12 +20,12 @@ class MoviesController < ApplicationController
     # default: render 'new' template
   end
 
-#def sort
-#     sort = params[:sort] || session[:sort]
-#     if sort == 'title'
-#        ordering = {:order => :title}
-#     end
-#   end
+def sort
+     sort = params[:sort] || session[:sort]
+     if sort == 'title'
+        ordering = {:order => :title}
+     end
+   end
 
   def create
     @movie = Movie.create!(params[:movie])
