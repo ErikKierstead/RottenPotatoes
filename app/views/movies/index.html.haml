@@ -1,12 +1,13 @@
 -#  This file is app/views/movies/index.html.haml
 -# heroku run rake db:seed
-
-      %th{:class => @title_header}= link_to 'Movie Title', movie_path(:sort => 'title'), :id => 'title_header'
+-# %th{:class => @title_header}= link_to 'Movie Title', movie_path(:sort => 'title'), :id => 'title_header'
+-# %
 %h1 All Movies
 
 %table#movies
   %thead
     %tr
+      %th{:class => @title_header}= link_to 'Movie Title', movie_path(:sort => 'title'), :id => 'title_header'
       %th= link_to 'Movie Title', movies_path(sort: 'title')
       %th Rating
       %th Release Date
