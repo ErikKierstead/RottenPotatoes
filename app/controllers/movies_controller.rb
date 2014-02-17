@@ -13,19 +13,20 @@ class MoviesController < ApplicationController
  end
 
   def index
-    @movies = Movie.all
+     #@movies = Movie.all
+     @movies = Movie.order(params[:sort])
   end
 
   def new
     # default: render 'new' template
   end
 
-def sort
-     sort = params[:sort] || session[:sort]
-     if sort == 'title'
-        ordering = {:order => :title}
-     end
-   end
+#def sort
+#     sort = params[:sort] || session[:sort]
+#     if sort == 'title'
+#        ordering = {:order => :title}
+#     end
+#   end
 
   def create
     @movie = Movie.create!(params[:movie])
