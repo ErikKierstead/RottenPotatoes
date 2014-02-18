@@ -8,21 +8,43 @@ class MoviesController < ApplicationController
  end
 
   def index
-    raise params.inspect
+#raise params.inspect
 
     @movies = Movie.all
-    @eriksVar = "happy pandas"
 
-#  sort = params[:sort] || session[:sort]
-#   if sort == 'title'
-#      ordering = {:order => :title}
-#   end
+    sort = params[:sort]
+
+    if sort == 'title'
+       
+       session[:date] = "desc"
+
+       if(session[:sort] == 'asc')
+          @movies = @movies.sort_by{|m| m.title}.reverse
+          session[:sort] = 'desc'
+       
+       else
+          @movies = @movies.sort_by{|m| m.title}
+          session[:sort] = 'asc'
+       end
+
+    elsif sort == 'date'
+
+       session[:sort] = "desc"
+
+       if(session[:date] == 'asc')
+          @movies = @movies.sort_by{|m| m.release_date}.reverse
+          session[:date] = 'desc'
+       
+       else
+          @movies = @movies.sort_by{|m| m.release_date}
+          session[:date] = 'asc'
+      
+       end
+
+    end
 
   end
     
-#@movies = Movie.order(params[:sort])
-#@movies = Movie.all
-#@movies = Movie.order(params[:sort])
 #if(params[:sort].to_s == 'title')
 #       session[:sort] = params[:sort]
 #       @movies = @movies.sort_by{|m| m.title}
