@@ -8,6 +8,7 @@ class MoviesController < ApplicationController
  end
 
   def index
+    raise params.inspect
 
     @movies = Movie.all
     @eriksVar = "happy pandas"
