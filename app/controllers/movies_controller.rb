@@ -19,7 +19,9 @@ class MoviesController < ApplicationController
     if sort == 'title'
        ordering = {:order => :title}
     end
-      
+
+  end
+    
 #@movies = Movie.order(params[:sort])
 #@movies = Movie.all
 #@movies = Movie.order(params[:sort])
