@@ -11,25 +11,37 @@ class MoviesController < ApplicationController
 #raise params.inspect
 
     @movies = Movie.all
+    @all_ratings = Movie.uniq.pluck(:rating)
 
-    sort = params[:sort]
+    if params[:sort] == nil
+       sort = session[:sort]
+#raise params.inspect
+#raise session.inspect
+    else
+       sort = params[:sort]
+    end
+#sort = params[:sort] || session[:sort]
 
-    if sort == 'title'
+   session[:sort] = params[:sort]
+
+if sort == 'title'
        
        session[:date] = "desc"
+       session[:hilite]= "title"
 
-       if(session[:sort] == 'asc')
+       if(session[:direction] == 'asc')
           @movies = @movies.sort_by{|m| m.title}.reverse
-          session[:sort] = 'desc'
+          session[:direction] = 'desc'
        
        else
           @movies = @movies.sort_by{|m| m.title}
-          session[:sort] = 'asc'
+          session[:direction] = 'asc'
        end
 
     elsif sort == 'date'
 
-       session[:sort] = "desc"
+       session[:direction] = "desc"
+       session[:hilite] = "date"
 
        if(session[:date] == 'asc')
           @movies = @movies.sort_by{|m| m.release_date}.reverse
@@ -41,10 +53,14 @@ class MoviesController < ApplicationController
       
        end
 
-    end
+    elsif session[:hilite] = ""
 
-  end
-    
+   end
+
+
+end
+
+
 #if(params[:sort].to_s == 'title')
 #       session[:sort] = params[:sort]
 #       @movies = @movies.sort_by{|m| m.title}
