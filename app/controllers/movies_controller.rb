@@ -37,18 +37,14 @@ class MoviesController < ApplicationController
     ratingsHash[:ratings] = params[:ratings] || session[:ratings] || Hash[@all_ratings.map {|x| [x,x] }]
     ratingsHash[:ratings] ? sort_filter = ratingsHash[:ratings].keys : sort_filter = @all_ratings
 
-#   raise ratingsHash[:ratings].inspect
+    #Shoves Ratings into session[:ratings] to Keep Values:
     session[:ratings] = params[:ratings] || session[:ratings] || ratingsHash[:ratings]
-#params[:ratings] || session[:ratings] || ratingsHash[:ratings]
 
     #Checks for Missing params Values, Flips Direction, and redirects:
-   if params[:commit] or params[:ratings] != ratingsHash[:ratings]
+    if params[:commit] or params[:ratings] != ratingsHash[:ratings]
        session[:direct] == :desc ? session[:direct] = :asc : session[:direct] = :desc 
        redirect_to :field => session[:field], :ratings => ratingsHash[:ratings] and return
-   end
-
-    #Shoves Ratings into session[:ratings] to Keep Values:
-#session[:ratings] = params[:ratings] || session[:ratings] || ratingsHash[:ratings]
+    end
 
     #Sorts Movies:
     @movies = Movie.order_by(sort_field, sort_direct, sort_filter)
