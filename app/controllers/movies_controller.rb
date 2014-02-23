@@ -8,63 +8,50 @@ class MoviesController < ApplicationController
  end
 
   def index
-#raise params.inspect
 
-    @movies = Movie.all
+    #Pulls Any Unique Value of Rating from Movie Database:
     @all_ratings = Movie.uniq.pluck(:rating)
 
-    if params[:sort] == nil
-       sort = session[:sort]
-#raise params.inspect
-#raise session.inspect
-    else
-       sort = params[:sort]
+    #Finds non-Nil Value for Field if it Exists from Current/Last Session:
+    sort_field = params[:field] || session[:field]
+    
+    #Discovers Which Column to Hilight with CSS Code and
+    #Saves Field from Current Session (params) to Session:
+    session[:hilite] = params[:field] || session[:field]
+    session[:field] = params[:field] || session[:field]
+
+    #If Page Not Reset and Session Has a Direction then Flip Direction:
+    if(params[:commit] != "Refresh")
+        session[:direct] == :desc ? session[:direct] = :asc : session[:direct] = :desc 
     end
-#sort = params[:sort] || session[:sort]
 
-   session[:sort] = params[:sort]
+    #Put Direction (if it exists in session) In a Local Variable - Default Descending:
+    sort_direct = session[:direct] || :desc
 
-if sort == 'title'
-       
-       session[:date] = "desc"
-       session[:hilite]= "title"
+    #Opens a Temporary Hash to Solve Three Condition Scenario of:
+    #    - params[:ratings] nil, session[:ratings] nil
+#   #    - params[:ratings] nil, session[:ratings] has values
+#   #    - params[:ratings] has values
 
-       if(session[:direction] == 'asc')
-          @movies = @movies.sort_by{|m| m.title}.reverse
-          session[:direction] = 'desc'
-       
-       else
-          @movies = @movies.sort_by{|m| m.title}
-          session[:direction] = 'asc'
-       end
+    ratingsHash = {}
+    ratingsHash[:ratings] = params[:ratings] || session[:ratings] || {:ratings => @all_ratings}
+    ratingsHash[:ratings] ? sort_filter = ratingsHash[:ratings].keys : sort_filter = @all_ratings
+    
 
-    elsif sort == 'date'
+    #Checks for Missing params Values, Flips Direction, and redirects:
+    if params[:commit] or params[:ratings] != ratingsHash[:ratings]
+        session[:direct] == :desc ? session[:direct] = :asc : session[:direct] = :desc 
+        redirect_to :field => session[:field], :ratings => ratingsHash[:ratings] and return
+    end
 
-       session[:direction] = "desc"
-       session[:hilite] = "date"
+    #Shoves Ratings into session[:ratings] to Keep Values:
+    session[:ratings] = params[:ratings] || session[:ratings]
 
-       if(session[:date] == 'asc')
-          @movies = @movies.sort_by{|m| m.release_date}.reverse
-          session[:date] = 'desc'
-       
-       else
-          @movies = @movies.sort_by{|m| m.release_date}
-          session[:date] = 'asc'
-      
-       end
+    #Sorts Movies:
+    @movies = Movie.order_by(sort_field, sort_direct, sort_filter)
 
-    elsif session[:hilite] = ""
-
-   end
-
-
-end
-
-
-#if(params[:sort].to_s == 'title')
-#       session[:sort] = params[:sort]
-#       @movies = @movies.sort_by{|m| m.title}
-# end
+    
+  end
 
   def new
     # default: render 'new' template
